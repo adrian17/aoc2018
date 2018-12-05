@@ -7,34 +7,19 @@ fn read_input() -> Vec<String> {
     contents.lines().map(|x| x.to_string()).collect()
 }
 
-fn iterate(chain: &str) -> String {
-    let mut ret = String::new();
-
-    for c in chain.chars() {
-        if ret.is_empty() {
-            ret.push(c);
-        } else {
-            let last = ret.chars().last().unwrap();
-            if c.eq_ignore_ascii_case(&last) && c.is_lowercase() != last.is_lowercase() {
-                ret.pop();
-            } else {
-                ret.push(c);
-            }
-        }
-    }
-    ret
+fn opposite(c1: char, c2: char) -> bool {
+    c1 != c2 && c1.eq_ignore_ascii_case(&c2)
 }
 
 fn shorten(chain: String) -> String {
-    let mut previous = chain;
-    let mut next;
-    loop {
-        next = iterate(&previous);
-        if next.len() == previous.len() {
-            return previous;
+    chain.chars().fold("".to_string(), |mut sum, c| {
+        if !sum.is_empty() && opposite(c, sum.chars().last().unwrap()) {
+            sum.pop();
+        } else {
+            sum.push(c);
         }
-        previous = next;
-    }
+        sum
+    })
 }
 
 fn main() {
